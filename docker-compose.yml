@@ -1,0 +1,32 @@
+version: "3.7"
+services:
+  app:
+    image: fast-daniel:v1
+    build: .
+    container_name: fast-daniel
+    command: uvicorn app.main:app --host 0.0.0.0 --reload
+    restart: always
+    ports:
+      - 5000:8000
+    volumes:
+      - .:/app
+    environment:
+      DEBUG: 1
+      DB_HOST: dbmysql
+      DB_USER: root
+      DB_PASSWORD: secret
+      DB_NAME: dbtodos
+    depends_on:
+      - dbmysql
+
+  dbmysql:
+    image: mysql:8.0
+    container_name: mysql-daniel
+    restart: always
+    ports:
+      - 23306:3306
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: dbtodos
